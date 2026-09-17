@@ -42,6 +42,17 @@
 
         <input id="mood" class="mood-input" type="text" placeholder="Mood / one word for today (optional)" maxlength="60" />
 
+        <div class="prompt-bar">
+          <button id="prompt-btn" class="btn" title="Get a random thing to write about">💡 Give me a prompt</button>
+          <div id="prompt-box" class="prompt-box hidden">
+            <span id="prompt-text" class="prompt-text"></span>
+            <div class="prompt-actions">
+              <button id="prompt-use" class="btn btn-primary btn-sm" title="Add this prompt to your entry">Use it</button>
+              <button id="prompt-shuffle" class="btn btn-sm" title="Show a different prompt">↻ Another</button>
+            </div>
+          </div>
+        </div>
+
         <textarea id="editor" class="editor" placeholder="Write about your day..."></textarea>
       </div>
 

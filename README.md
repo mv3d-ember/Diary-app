@@ -14,6 +14,8 @@ own device.
 ## Features
 
 - **One page per date** — pages are organized and sorted newest-first.
+- **Writing prompts** — stuck? Hit **💡 Give me a prompt** for a random thing
+  to write about. "Use it" drops it into your entry, "↻ Another" shuffles.
 - **Auto-save** — no save button to remember.
 - **Mood line** — jot one word for how the day felt (optional).
 - **Search** — find any past entry by word, mood, or date.

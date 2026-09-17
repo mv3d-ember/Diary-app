@@ -102,7 +102,72 @@ const el = {
   editor: document.getElementById("editor"),
   saveStatus: document.getElementById("save-status"),
   deleteEntry: document.getElementById("delete-entry"),
+  promptBtn: document.getElementById("prompt-btn"),
+  promptBox: document.getElementById("prompt-box"),
+  promptText: document.getElementById("prompt-text"),
+  promptUse: document.getElementById("prompt-use"),
+  promptShuffle: document.getElementById("prompt-shuffle"),
 };
+
+// ---- Writing prompts ----------------------------------------------------
+// Ideas to get you started when the page feels blank.
+const PROMPTS = [
+  "What was the best part of today?",
+  "What is something that annoyed you today, and why?",
+  "What is one thing you learned or figured out today?",
+  "If today had a title like a movie, what would it be?",
+  "What are you looking forward to this week?",
+  "Who did you talk to today, and how did it go?",
+  "What is something you're proud of right now?",
+  "Describe your mood today using three words.",
+  "What would make tomorrow a good day?",
+  "What is a small win you had today?",
+  "What is something you wish you'd done differently today?",
+  "What made you laugh recently?",
+  "What is a project or idea you keep thinking about?",
+  "If you could redo one moment from today, which one?",
+  "What is something you're grateful for right now?",
+  "What is stressing you out, and what could help?",
+  "What did you build, make, or fix today?",
+  "What game did you play, and what happened in it?",
+  "What is a goal for the next month?",
+  "What is one thing you want to remember about today?",
+  "Describe today to someone who wasn't there.",
+  "What is something new you'd like to try?",
+  "What drained your energy today, and what gave you energy?",
+  "What is a song, video, or thing you're into right now?",
+];
+
+let lastPromptIndex = -1;
+
+function showRandomPrompt() {
+  // Pick a prompt that isn't the same as the one just shown.
+  let index = Math.floor(Math.random() * PROMPTS.length);
+  if (PROMPTS.length > 1) {
+    while (index === lastPromptIndex) {
+      index = Math.floor(Math.random() * PROMPTS.length);
+    }
+  }
+  lastPromptIndex = index;
+
+  el.promptText.textContent = PROMPTS[index];
+  el.promptBox.classList.remove("hidden");
+}
+
+function usePrompt() {
+  const prompt = el.promptText.textContent;
+  if (!prompt) return;
+
+  // Add the prompt to the entry as a heading line, then focus below it.
+  const existing = el.editor.value;
+  const prefix = existing && !existing.endsWith("\n") ? "\n\n" : "";
+  el.editor.value = `${existing}${prefix}${prompt}\n`;
+
+  el.promptBox.classList.add("hidden");
+  el.editor.focus();
+  el.editor.selectionStart = el.editor.selectionEnd = el.editor.value.length;
+  scheduleSave();
+}
 
 // ---- Rendering the sidebar list ----------------------------------------
 
@@ -185,6 +250,7 @@ function openPage(key) {
   el.mood.value = entry.mood || "";
   el.editor.value = entry.body || "";
   el.saveStatus.textContent = "";
+  el.promptBox.classList.add("hidden");
 
   renderList();
   el.editor.focus();
@@ -248,6 +314,10 @@ el.deleteEntry.addEventListener("click", deleteCurrent);
 el.mood.addEventListener("input", scheduleSave);
 el.editor.addEventListener("input", scheduleSave);
 el.search.addEventListener("input", renderList);
+
+el.promptBtn.addEventListener("click", showRandomPrompt);
+el.promptShuffle.addEventListener("click", showRandomPrompt);
+el.promptUse.addEventListener("click", usePrompt);
 
 // Change which day this page belongs to via the date picker.
 el.pageDate.addEventListener("change", () => {
