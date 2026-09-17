@@ -18,6 +18,9 @@ own device.
   to write about. "Use it" drops it into your entry, "↻ Another" shuffles.
 - **Auto-save** — no save button to remember.
 - **Mood line** — jot one word for how the day felt (optional).
+- **Theme colors** — the **⚙️** button opens settings where you can pick your
+  own primary color (buttons/highlights) and secondary color (sidebar). Your
+  choice is saved and reused next time.
 - **Search** — find any past entry by word, mood, or date.
 - **Change the date** — the date picker at the top moves a page to another day.
 - **Delete** — remove a page you don't want.

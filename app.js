@@ -13,6 +13,67 @@
  */
 
 const STORAGE_KEY = "my-diary-entries-v1";
+const THEME_KEY = "my-diary-theme-v1";
+
+// Default theme colors (match the CSS :root values).
+const DEFAULT_THEME = {
+  primary: "#5b8def", // accent — buttons & highlights
+  secondary: "#1f2430", // sidebar background
+};
+
+// ---- Theme helpers ------------------------------------------------------
+
+// Shift a hex color lighter (positive amount) or darker (negative).
+function shade(hex, amount) {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const clamp = (v) => Math.max(0, Math.min(255, v));
+  const r = clamp(((n >> 16) & 255) + amount);
+  const g = clamp(((n >> 8) & 255) + amount);
+  const b = clamp((n & 255) + amount);
+  return "#" + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+}
+
+// Pick black or white text depending on how bright a background color is.
+function readableText(hex) {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 140 ? "#1f2430" : "#e6e9f0";
+}
+
+function loadTheme() {
+  try {
+    const raw = localStorage.getItem(THEME_KEY);
+    return raw ? { ...DEFAULT_THEME, ...JSON.parse(raw) } : { ...DEFAULT_THEME };
+  } catch (err) {
+    console.error("Could not read saved theme:", err);
+    return { ...DEFAULT_THEME };
+  }
+}
+
+function saveTheme(theme) {
+  try {
+    localStorage.setItem(THEME_KEY, JSON.stringify(theme));
+  } catch (err) {
+    console.error("Could not save theme:", err);
+  }
+}
+
+// Apply a theme by overriding the CSS variables on :root.
+function applyTheme(theme) {
+  const root = document.documentElement.style;
+  root.setProperty("--accent", theme.primary);
+  root.setProperty("--accent-dark", shade(theme.primary, -28));
+  root.setProperty("--sidebar-bg", theme.secondary);
+  root.setProperty("--active", shade(theme.secondary, 22));
+  root.setProperty("--sidebar-text", readableText(theme.secondary));
+  root.setProperty("--sidebar-muted", shade(readableText(theme.secondary), -55));
+}
+
+let theme = loadTheme();
+applyTheme(theme); // apply before first paint so there's no color flash
 
 // ---- Storage helpers ----------------------------------------------------
 
@@ -107,6 +168,12 @@ const el = {
   promptText: document.getElementById("prompt-text"),
   promptUse: document.getElementById("prompt-use"),
   promptShuffle: document.getElementById("prompt-shuffle"),
+  settingsBtn: document.getElementById("settings-btn"),
+  settingsOverlay: document.getElementById("settings-overlay"),
+  settingsClose: document.getElementById("settings-close"),
+  settingsReset: document.getElementById("settings-reset"),
+  colorPrimary: document.getElementById("color-primary"),
+  colorSecondary: document.getElementById("color-secondary"),
 };
 
 // ---- Writing prompts ----------------------------------------------------
@@ -318,6 +385,50 @@ el.search.addEventListener("input", renderList);
 el.promptBtn.addEventListener("click", showRandomPrompt);
 el.promptShuffle.addEventListener("click", showRandomPrompt);
 el.promptUse.addEventListener("click", usePrompt);
+
+// ---- Settings / theme wiring -------------------------------------------
+
+function openSettings() {
+  el.colorPrimary.value = theme.primary;
+  el.colorSecondary.value = theme.secondary;
+  el.settingsOverlay.classList.remove("hidden");
+}
+
+function closeSettings() {
+  el.settingsOverlay.classList.add("hidden");
+}
+
+el.settingsBtn.addEventListener("click", openSettings);
+el.settingsClose.addEventListener("click", closeSettings);
+
+// Live-update the colors as the pickers move.
+el.colorPrimary.addEventListener("input", () => {
+  theme.primary = el.colorPrimary.value;
+  applyTheme(theme);
+  saveTheme(theme);
+});
+
+el.colorSecondary.addEventListener("input", () => {
+  theme.secondary = el.colorSecondary.value;
+  applyTheme(theme);
+  saveTheme(theme);
+});
+
+el.settingsReset.addEventListener("click", () => {
+  theme = { ...DEFAULT_THEME };
+  applyTheme(theme);
+  saveTheme(theme);
+  el.colorPrimary.value = theme.primary;
+  el.colorSecondary.value = theme.secondary;
+});
+
+// Close the modal by clicking the dark backdrop or pressing Escape.
+el.settingsOverlay.addEventListener("click", (e) => {
+  if (e.target === el.settingsOverlay) closeSettings();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeSettings();
+});
 
 // Change which day this page belongs to via the date picker.
 el.pageDate.addEventListener("change", () => {

@@ -12,7 +12,10 @@
     <aside class="sidebar">
       <header class="sidebar-head">
         <h1>My Diary</h1>
-        <button id="new-entry" class="btn btn-primary" title="Jump to today's page">+ Today</button>
+        <div class="head-actions">
+          <button id="settings-btn" class="btn icon-btn" title="Theme settings">⚙️</button>
+          <button id="new-entry" class="btn btn-primary" title="Jump to today's page">+ Today</button>
+        </div>
       </header>
 
       <div class="search-wrap">
@@ -61,6 +64,32 @@
         <button id="open-today" class="btn btn-primary">Open today's page</button>
       </div>
     </main>
+  </div>
+
+  <!-- Settings: theme colors -->
+  <div id="settings-overlay" class="overlay hidden">
+    <div class="modal" role="dialog" aria-labelledby="settings-title" aria-modal="true">
+      <div class="modal-head">
+        <h2 id="settings-title">Theme colors</h2>
+        <button id="settings-close" class="btn icon-btn" title="Close">✕</button>
+      </div>
+
+      <div class="setting-row">
+        <label for="color-primary">Primary color</label>
+        <span class="setting-hint">Buttons &amp; highlights</span>
+        <input id="color-primary" type="color" />
+      </div>
+
+      <div class="setting-row">
+        <label for="color-secondary">Secondary color</label>
+        <span class="setting-hint">Sidebar background</span>
+        <input id="color-secondary" type="color" />
+      </div>
+
+      <div class="modal-foot">
+        <button id="settings-reset" class="btn">Reset to default</button>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>
