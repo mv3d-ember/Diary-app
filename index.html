@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Diary</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar: list of date pages -->
+    <aside class="sidebar">
+      <header class="sidebar-head">
+        <h1>My Diary</h1>
+        <button id="new-entry" class="btn btn-primary" title="Jump to today's page">+ Today</button>
+      </header>
+
+      <div class="search-wrap">
+        <input id="search" type="search" placeholder="Search entries..." autocomplete="off" />
+      </div>
+
+      <nav id="page-list" class="page-list" aria-label="Diary pages">
+        <!-- date pages get inserted here -->
+      </nav>
+
+      <footer class="sidebar-foot">
+        <span id="entry-count">0 entries</span>
+      </footer>
+    </aside>
+
+    <!-- Main: the open page for the selected date -->
+    <main class="page">
+      <div id="page-view" class="page-view">
+        <div class="page-toolbar">
+          <input id="page-date" type="date" class="date-picker" />
+          <div class="spacer"></div>
+          <span id="save-status" class="save-status"></span>
+          <button id="delete-entry" class="btn btn-danger" title="Delete this page">Delete</button>
+        </div>
+
+        <h2 id="page-heading" class="page-heading">Today</h2>
+
+        <input id="mood" class="mood-input" type="text" placeholder="Mood / one word for today (optional)" maxlength="60" />
+
+        <textarea id="editor" class="editor" placeholder="Write about your day..."></textarea>
+      </div>
+
+      <div id="empty-state" class="empty-state hidden">
+        <p>No page open.</p>
+        <button id="open-today" class="btn btn-primary">Open today's page</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
